@@ -1,0 +1,53 @@
+import 'package:flutter/material.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  late TabController _tabController;
+  
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _tabController = TabController(length: _categories.length() + 1, vsync: this)
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+}
+
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //     home: DefaultTabController(
+  //       length: 3,
+  //       child: Scaffold(
+  //         appBar: AppBar(
+  //           bottom: const TabBar(
+  //             tabs: [
+  //               Tab(icon: Icon(Icons.directions_car)),
+  //               Tab(icon: Icon(Icons.directions_transit)),
+  //               Tab(icon: Icon(Icons.directions_bike)),
+  //             ],
+  //           ),
+  //           title: const Text('Tabs Demo'),
+  //         ),
+  //         body: const TabBarView(
+  //           children: [
+  //             Icon(Icons.directions_car),
+  //             Icon(Icons.directions_transit),
+  //             Icon(Icons.directions_bike),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
