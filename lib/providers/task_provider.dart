@@ -13,12 +13,28 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  // remove task and all subtasks
   void removeTask(String categoryId, String taskId){
     _taskPerCategory[categoryId]?.removeWhere((task) => task.id == taskId);
     notifyListeners();
   }
 
-  void addSubTask(){}
+  // add subTask to existing parentTask
+  void addSubTask(String categoryId, String parentTaskId, Task subTask){
+    final Task? parentTask = _taskPerCategory[categoryId]
+      ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
+
+      if (parentTask != null){
+        parentTask.subTask.add(subTask);
+        notifyListeners();
+      }
+  }
   
-  void removeSubTask(){}
+  void removeSubTask(String categoryId, String parentTaskId, Task subTask){
+    
+  }
+
+
+  void toggleTask(){}
+  void tobbleSubTask(){}
 }
