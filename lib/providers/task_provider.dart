@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import '../models/task.dart';
+import '../data/dummy_data.dart';
 
 class TaskProvider extends ChangeNotifier{
-  final Map<String, List<Task>> _taskPerCategory = {};
+  //final Map<String, List<Task>> _taskPerCategory = {};
+  final Map<String, List<Task>> _taskPerCategory = dummyTasks;
 
   List<Task> getTask(String categoryId) => _taskPerCategory[categoryId] ?? [];
 
@@ -47,7 +49,7 @@ class TaskProvider extends ChangeNotifier{
       ?.firstWhere((t) => t.id == taskId, orElse: () => Task(id: "", taskName: ""));
 
     if (task != null){
-      task.isDone = done ?? task.isDone;
+      task.isDone = done ?? !task.isDone;
 
       if (task.subTask.isNotEmpty){
         task.toggleAllSub(task.isDone);

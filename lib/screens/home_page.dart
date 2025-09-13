@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/providers/category_provider.dart';
 import 'package:to_do_app/widgets/category_tab_w.dart';
+import 'package:to_do_app/widgets/task_list_w.dart';
 import 'package:to_do_app/widgets/task_title_w.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,13 +39,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       body: TabBarView(
         controller: _tabController,
         children: categories
-          .map((cat) => taskTitleW(categoryId: cat.id).toList(),
+          .map((cat) => TaskListW(categoryId: cat.id)).toList(),
         ),
-    )
-    
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+
+        },
+        child: const Icon(Icons.add),
+      )
+    );
   }
-
-
 }
 
 

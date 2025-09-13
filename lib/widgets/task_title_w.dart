@@ -15,24 +15,60 @@ class TaskTitleW extends StatelessWidget{
     });
 
     @override Widget build(BuildContext context) {
-        return ListTile(
-            leading: Checkbox(
-                value: task.isDone, onChanged: (_){
-                    context.read<TaskProvider>().toggleTaskCheck(categoryId, task.id);
-                },
-            ),
-            title: Text(
-                task.taskName,
-                style: TextStyle(
-                    decoration: task.isDone ? TextDecoration.lineThrough : null,
+        return Column(
+            children: [
+                ListTile(
+                  minVerticalPadding: 0,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                    leading: Checkbox(
+                        value: task.isDone, onChanged: (_){
+                            context.read<TaskProvider>().toggleTaskCheck(categoryId, task.id);
+                        },
+                    ),
+                    title: Text(
+                        task.taskName,
+                        style: TextStyle(
+                            decoration: task.isDone ? TextDecoration.lineThrough : null,
+                        ),
+                    ),
+                    trailing: IconButton(
+                        icon: const Icon(Icons.close),
+                        color: const Color.fromARGB(255, 126, 126, 126),
+                        onPressed: () {
+                            context.read<TaskProvider>().removeTask(categoryId, task.id);
+                        }
+                    ),
                 ),
-            ),
-            trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                    context.read<TaskProvider>().removeTask(categoryId, task.id);
-                }
-            ),
+                if (task.subTask.isNotEmpty)
+                    Padding(
+                        padding: const EdgeInsets.only(left: 20.0, top: 0, bottom: 0),
+                        child: Column(
+                            children: task.subTask.map((sub) {
+                                return ListTile(
+                                    leading: Checkbox(
+                                        value: sub.isDone, 
+                                        onChanged: (_){
+                                            context.read<TaskProvider>().toggleSubTaskCheck(categoryId, task.id, sub.id);
+                                        },
+                                    ),
+                                    title: Text(
+                                        sub.taskName,
+                                        style: TextStyle(
+                                            decoration: sub.isDone ? TextDecoration.lineThrough : null,
+                                        ),
+                                    ),
+                                    trailing: IconButton(
+                                        icon: const Icon(Icons.close),
+                                        color: const Color.fromARGB(255, 126, 126, 126),
+                                        onPressed: () {
+                                            context.read<TaskProvider>().removeSubTask(categoryId, task.id, sub);
+                                        }
+                                    ),
+                                );
+                            }).toList(),
+                        ),
+                    ),
+            ],
         );
     }
 }
