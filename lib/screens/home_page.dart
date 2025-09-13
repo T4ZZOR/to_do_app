@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/providers/category_provider.dart';
+import 'package:to_do_app/widgets/category_tab_w.dart';
+import 'package:to_do_app/widgets/task_title_w.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,17 +14,37 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController _tabController;
   
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _tabController = TabController(length: _categories.length() + 1, vsync: this)
-  // }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final categories = context.watch<CategoryProvider>().categories;
+    _tabController = TabController(length: categories.length, vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    final categories = context.watch<CategoryProvider>().categories;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Moje zadania"),
+        bottom: TabBar(
+          controller: _tabController, 
+          isScrollable: true, 
+          tabs: categories
+            .map((cat) => CategoryTabW(category: cat)).toList(),
+          ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: categories
+          .map((cat) => taskTitleW(categoryId: cat.id).toList(),
+        ),
+    )
+    
   }
+
+
 }
 
 

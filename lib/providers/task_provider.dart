@@ -30,11 +30,49 @@ class TaskProvider extends ChangeNotifier{
       }
   }
   
+  // remove subTask
   void removeSubTask(String categoryId, String parentTaskId, Task subTask){
-    
+    final Task? parentTask = _taskPerCategory[categoryId]
+      ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
+
+    if (parentTask != null){
+      parentTask.subTask.remove(subTask);
+      notifyListeners();
+    }
   }
 
+  // toggle task 
+  void toggleTaskCheck(String categoryId, String taskId, {bool? done}){
+    final task = _taskPerCategory[categoryId]
+      ?.firstWhere((t) => t.id == taskId, orElse: () => Task(id: "", taskName: ""));
 
-  void toggleTask(){}
-  void tobbleSubTask(){}
+    if (task != null){
+      task.isDone = done ?? task.isDone;
+
+      if (task.subTask.isNotEmpty){
+        task.toggleAllSub(task.isDone);
+      }
+      notifyListeners();
+    }
+  }
+
+  // toggle subTask 
+  void toggleSubTaskCheck(String categoryId, String parentTaskId, String subTaskId, {bool? done}){
+    final Task? parentTask = _taskPerCategory[categoryId]
+      ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
+
+    if (parentTask != null){
+      final subTask = parentTask.subTask
+        .firstWhere((st) => st.id == subTaskId, orElse: () => Task(id: "", taskName: ""));
+
+      if (parentTask.subTask.isNotEmpty){
+        subTask.isDone = done ?? !subTask.isDone;
+
+        if (parentTask.areAllSubtaskIsDone){
+          parentTask.isDone = true;
+        }
+        notifyListeners();
+      }  
+    }
+  }
 }

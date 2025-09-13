@@ -20,12 +20,19 @@ class Task {
 
   // tobble all subtasks
   void toggleAllSub(bool status){
-    for (var sub in subTask){
-      sub.isDone = status;
+    if (status){
+      for (var sub in subTask){
+        sub.isDone = true;
+      }
+    }
+    else {
+      for (var sub in subTask){
+        sub.isDone = !sub.isDone;
+      }
     }
   }
 
   // check all subtasks
-  bool get areAllSubtaskIsDone => subTask.isEmpty && subTask.every((sub) => sub.isDone);
+  bool get areAllSubtaskIsDone => subTask.isEmpty && subTask.every((sub) => sub.isDone == true);
 
 }
