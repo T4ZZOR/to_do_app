@@ -12,11 +12,20 @@ class AddCategoryDialog extends StatefulWidget{
 
 class _AddCategoryDialogState extends State<AddCategoryDialog> {
   final TextEditingController _controller = TextEditingController();
+  String? _errorText;
 
+  // check _controller if is not empty - remove error message
   @override
-  void dispose(){
-    _controller.dispose();
-    super.dispose();
+  void initState(){
+    super.initState();
+
+    _controller.addListener((){
+      if (_errorText != null && _controller.text.trim().isNotEmpty){
+      setState(() {
+        _errorText = null;
+      });
+    }
+    });
   }
   
   @override
@@ -25,9 +34,13 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
       title: const Text("add category"),
       content: TextField(
         controller: _controller,
-        decoration: const InputDecoration(hintText: "category name"),
+        decoration: InputDecoration(
+          hintText: "category name",
+          errorText: _errorText,
+        ),
       ),
       actions: [
+        TextButton(onPressed: (){Navigator.of(context).pop();}, child: const Text("cancel")),
         TextButton(
           onPressed: (){
             final name = _controller.text.trim();
@@ -40,10 +53,21 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                 );
               Navigator.of(context).pop();
             }
+            else { 
+              setState(() {
+                _errorText = "this field is required";
+              });
+            }
           },
           child: const Text("add"),
         )
       ],
     );
+  }
+
+  @override
+  void dispose(){
+    _controller.dispose();
+    super.dispose();
   }
 }

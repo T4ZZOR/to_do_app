@@ -11,11 +11,12 @@ class TaskListW extends StatelessWidget{
   Widget build(BuildContext context) {
     final tasks = context.watch<TaskProvider>().getTask(categoryId);
 
-    return ListView.builder(
+    return ListView.separated(
       itemCount: tasks.length,
       itemBuilder: (ctx, index) {
         return TaskTitleW(task: tasks[index], categoryId: categoryId);
         },
-      );
+      separatorBuilder: (BuildContext context, int index) => const Divider(),
+    );
   }
 }

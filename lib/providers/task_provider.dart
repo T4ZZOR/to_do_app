@@ -42,7 +42,7 @@ class TaskProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
-
+  // FIXME when sub task is on, toggle isDone and !isDone on main parentTask cause revert the subtasks
   // toggle task 
   void toggleTaskCheck(String categoryId, String taskId, {bool? done}){
     final task = _taskPerCategory[categoryId]
@@ -57,7 +57,7 @@ class TaskProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
-
+  // FIXME all subtask do not check main task
   // toggle subTask 
   void toggleSubTaskCheck(String categoryId, String parentTaskId, String subTaskId, {bool? done}){
     final Task? parentTask = _taskPerCategory[categoryId]
