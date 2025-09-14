@@ -8,7 +8,7 @@ class CategoryTabW extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Tab(
-      icon: Icon(category.icon),
+      //icon: Icon(category.icon),
       text: category.name,
     );
   }
