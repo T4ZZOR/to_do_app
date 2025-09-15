@@ -14,13 +14,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  late TabController _tabController;
+  TabController? _tabController;
   
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final categories = context.watch<CategoryProvider>().categories;
+
+    _tabController?.dispose();
+
     _tabController = TabController(length: categories.length + 1, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -42,32 +51,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ...categories.map((cat) => CategoryTabW(category: cat)),
             Tab(
               child: GestureDetector(
-                onTap: () {
+                onTap: (){
                   showDialog(
-                    context: context,
-                    builder: (_) => const AddCategoryDialog(),
-                  );
+                    context: context, 
+                    builder: (_) => AddCategoryDialog(),
+                    );
                 },
                 child: const Icon(Icons.add),
               ),
             ),
-          ],
+          ]            
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-        //categories.map((cat) => TaskListW(categoryId: cat.id)).toList(),
           ...categories.map((cat) => TaskListPage(categoryId: cat.id)),
-          Container(),
+          Container()
         ]
-        ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          // TODO add create task in active categories
-        },
-        child: const Icon(Icons.add),
-      )
+          
+      ),
     );
   }
 }

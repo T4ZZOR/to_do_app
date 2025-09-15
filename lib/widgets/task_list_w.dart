@@ -48,6 +48,7 @@ class TaskListW extends StatelessWidget{
         ),
         Expanded(
           child: ListView.builder(
+            itemCount: tasks.length,
             itemBuilder: (ctx, index) {
               return Card(
                 color: Colors.greenAccent.withAlpha(80),
