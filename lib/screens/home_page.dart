@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final categories = context.watch<CategoryProvider>().categories;
-    _tabController = TabController(length: categories.length, vsync: this);
+    _tabController = TabController(length: categories.length + 1, vsync: this);
   }
 
   @override
