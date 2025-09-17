@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_app/widgets/cateory_head_w.dart';
 import 'package:to_do_app/widgets/task_list_w.dart';
 
 class TaskListPage extends StatelessWidget{
@@ -8,6 +9,13 @@ class TaskListPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    return TaskListW(categoryId: categoryId);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CateoryHeadW(categoryId: categoryId),
+        Expanded(child: TaskListW(categoryId: categoryId))
+      ],
+    );
+    //return TaskListW(categoryId: categoryId);
   }
 }

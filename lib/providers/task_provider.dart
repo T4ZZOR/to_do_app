@@ -21,6 +21,11 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  void removeTaskFromCategory(String categoryId){
+    _taskPerCategory.remove(categoryId);
+    notifyListeners();
+  }
+
   // add subTask to existing parentTask
   void addSubTask(String categoryId, String parentTaskId, Task subTask){
     final Task? parentTask = _taskPerCategory[categoryId]
