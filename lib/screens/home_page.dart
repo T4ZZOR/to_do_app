@@ -4,7 +4,6 @@ import 'package:to_do_app/providers/category_provider.dart';
 import 'package:to_do_app/screens/task_list_page.dart';
 import 'package:to_do_app/widgets/add_category_dialog.dart';
 import 'package:to_do_app/widgets/category_tab_w.dart';
-import 'package:to_do_app/widgets/task_list_w.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +18,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final categories = context.watch<CategoryProvider>().categories;
+    final categories = context.read<CategoryProvider>().categories;
 
     _tabController?.dispose();
 
@@ -34,7 +33,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final categories = context.watch<CategoryProvider>().categories;
+    final categories = context.read<CategoryProvider>().categories;
 
     return Scaffold(
       appBar: AppBar(
@@ -54,7 +53,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 onTap: (){
                   showDialog(
                     context: context, 
-                    builder: (_) => AddCategoryDialog(),
+                    builder: (_) => AddCategoryDialog(), //FIXME sometimes, when click, tab is open - not CategoryDialog
                     );
                 },
                 child: const Icon(Icons.add),
@@ -69,7 +68,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ...categories.map((cat) => TaskListPage(categoryId: cat.id)),
           Container()
         ]
-          
       ),
     );
   }

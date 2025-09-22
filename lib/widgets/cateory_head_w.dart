@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/providers/category_provider.dart';
 import '../providers/task_provider.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class CateoryHeadW extends StatefulWidget{
   final String categoryId;
@@ -46,6 +47,40 @@ class _CategoryHeadWState extends State<CateoryHeadW> {
               ),
               Row(
                 children: [
+                  // TODO create more simple color picker
+                  IconButton(
+                    icon: Icon(Icons.palette),
+                    iconSize: 20,
+                    color: const Color.fromARGB(255, 117, 117, 117),
+                    onPressed: (){
+                      Color pickerColor = category.color;
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('Pick categoy color'),
+                          content: SingleChildScrollView(
+                            child: ColorPicker(
+                              pickerColor: pickerColor,
+                              onColorChanged: (color) { pickerColor = color; }
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(ctx).pop(),
+                              child: const Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                context.read<CategoryProvider>().changeColor(category, pickerColor);
+                                Navigator.of(ctx).pop();
+                              },
+                              child: const Text("Select"),
+                            ),
+                          ],
+                        )
+                      );                     
+                    }
+                  ),
                   IconButton(
                     icon: Icon(Icons.edit),
                     iconSize: 20,
@@ -53,34 +88,57 @@ class _CategoryHeadWState extends State<CateoryHeadW> {
                     onPressed: (){
                       showDialog(
                         context: context, 
-                        builder: (ctx) => AlertDialog(
-                          title: const Text("Put new category name"),
-                          content: TextField(
-                            controller: _controller,
-                            decoration: InputDecoration(
-                              hintText: "new category name",
-                              errorText: _errorText,
-                            ),
-                          ),
-                          actions: [
-                            TextButton(onPressed: (){Navigator.of(context).pop();}, child: const Text("cancel")),
-                            TextButton(
-                             onPressed: (){
-                               final newCatName = _controller.text.trim();
-                               if (newCatName.isNotEmpty){
-                                 categoryProvider.editCategory(category, newCatName);
-                                 Navigator.of(context).pop();
-                               }
-                               else { 
-                                 setState(() {
-                                   _errorText = "this field is required"; //FIXME czasem dziala czasem nie (o.o)
-                                 });
-                               }
-                             },
-                             child: const Text("change"),
-                            )
-                          ],
-                        )
+                        builder: (ctx) {
+                          // clear dialog
+                          _controller.clear();
+                          _errorText = null;
+
+                          // dynamically show allert
+                          return StatefulBuilder(
+                            builder: (context, setStateDialog) {
+                              _controller.addListener(() {
+                                if (_errorText != null && _controller.text.trim().isNotEmpty) {
+                                  setStateDialog(() {
+                                    _errorText = null;
+                                  });
+                                }
+                              });
+                              // show dialog
+                              return AlertDialog(
+                                title: const Text("Put new category name"),
+                                content: TextField(
+                                  controller: _controller,
+                                  decoration: InputDecoration(
+                                    hintText: "new category name",
+                                    errorText: _errorText,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text("cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      final newCatName = _controller.text.trim();
+                                      if (newCatName.isNotEmpty) {
+                                        categoryProvider.editCategory(category, newCatName);
+                                        Navigator.of(context).pop();
+                                      } else {
+                                        setStateDialog(() {
+                                          _errorText = "this field is required";
+                                        });
+                                      }
+                                    },
+                                    child: const Text("change"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
                       );
                     }
                   ),
@@ -114,6 +172,35 @@ class _CategoryHeadWState extends State<CateoryHeadW> {
     );
   }
 }
+
+                        // builder: (ctx) => AlertDialog(
+                        //   title: const Text("Put new category name"),
+                        //   content: TextField(
+                        //     controller: _controller,
+                        //     decoration: InputDecoration(
+                        //       hintText: "new category name",
+                        //       errorText: _errorText,
+                        //     ),
+                        //   ),
+                        //   actions: [
+                        //     TextButton(onPressed: (){Navigator.of(context).pop();}, child: const Text("cancel")),
+                        //     TextButton(
+                        //      onPressed: (){
+                        //        final newCatName = _controller.text.trim();
+                        //        if (newCatName.isNotEmpty){
+                        //          categoryProvider.editCategory(category, newCatName);
+                        //          Navigator.of(context).pop();
+                        //        }
+                        //        else { 
+                        //          setState(() {
+                        //            _errorText = "this field is required"; //FIXME czasem dziala czasem nie (o.o)
+                        //          });
+                        //        }
+                        //      },
+                        //      child: const Text("change"),
+                        //     )
+                        //   ],
+                        // )
 
 // class CateoryHeadW extends StatelessWidget{
 //   final String categoryId;
