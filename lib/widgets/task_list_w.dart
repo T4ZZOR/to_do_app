@@ -17,7 +17,7 @@ class TaskListW extends StatelessWidget{
       itemCount: tasks.length,
       itemBuilder: (ctx, index) {
         return Card(
-          color: category.color.withAlpha(95),
+          color: category.color.withAlpha(150),
           child: ListTile(
             title:  TaskTitleW(task: tasks[index], categoryId: categoryId)
           ),

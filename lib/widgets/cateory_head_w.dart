@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:to_do_app/providers/category_provider.dart';
 import '../providers/task_provider.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:to_do_app/constans/colors.dart';
 
 class CateoryHeadW extends StatefulWidget{
   final String categoryId;
@@ -47,7 +48,6 @@ class _CategoryHeadWState extends State<CateoryHeadW> {
               ),
               Row(
                 children: [
-                  // TODO create more simple color picker
                   IconButton(
                     icon: Icon(Icons.palette),
                     iconSize: 20,
@@ -59,8 +59,9 @@ class _CategoryHeadWState extends State<CateoryHeadW> {
                         builder: (ctx) => AlertDialog(
                           title: const Text('Pick categoy color'),
                           content: SingleChildScrollView(
-                            child: ColorPicker(
+                            child: BlockPicker( 
                               pickerColor: pickerColor,
+                              availableColors: categoryColors, // colors are definied in constans/colors.dart
                               onColorChanged: (color) { pickerColor = color; }
                             ),
                           ),

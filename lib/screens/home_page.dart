@@ -33,41 +33,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final categories = context.read<CategoryProvider>().categories;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("My Tasks"),
-        // TODO add more colors to tabs
-        bottom: TabBar(
-          controller: _tabController, 
-          isScrollable: true, 
-          physics: BouncingScrollPhysics(),
-          indicatorColor: Colors.amber,
-          indicatorWeight: 4,
-          labelColor: Colors.amber,
-          tabs: [
-            ...categories.map((cat) => CategoryTabW(category: cat)),
-            Tab(
-              child: GestureDetector(
-                onTap: (){
-                  showDialog(
-                    context: context, 
-                    builder: (_) => AddCategoryDialog(), //FIXME sometimes, when click, tab is open - not CategoryDialog
-                    );
-                },
-                child: const Icon(Icons.add),
-              ),
-            ),
-          ]            
+    final categories = context.watch<CategoryProvider>().categories;
+  
+    return DefaultTabController(
+      length: categories.length + 1,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("My Tasks"),
+          bottom: TabBar(
+            isScrollable: true,
+            indicatorColor: Colors.amber,//categories[categoryId].color,
+            indicatorWeight: 4,
+            labelColor: Colors.amber,
+            onTap: (index) {
+              if (index == categories.length) {
+                showDialog(
+                  context: context,
+                  builder: (_) => const AddCategoryDialog(),
+                );
+              }
+            },
+            tabs: [
+              ...categories.map((cat) => CategoryTabW(category: cat)),
+              const Tab(icon: Icon(Icons.add)),
+            ],
+          ),
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          ...categories.map((cat) => TaskListPage(categoryId: cat.id)),
-          Container()
-        ]
+        body: TabBarView(
+          children: [
+            ...categories.map((cat) => TaskListPage(categoryId: cat.id)),
+            Container(), // placeholder dla "+"
+          ],
+        ),
       ),
     );
   }

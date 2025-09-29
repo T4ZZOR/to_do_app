@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 const List<Color> categoryColors = [
-  Color.fromARGB(255, 251, 179, 179), // czerwony
-  Color.fromARGB(255, 169, 216, 255), // niebieski
+  Color.fromARGB(255, 255, 0, 0), // czerwony
+  Color.fromARGB(255, 0, 140, 255), // niebieski
   Color.fromARGB(255, 255, 221, 170), // pomarańczowy
   Color.fromARGB(255, 194, 235, 196), // zielony
   Color.fromARGB(255, 241, 164, 255), // fioletowy
