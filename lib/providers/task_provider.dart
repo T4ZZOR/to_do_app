@@ -9,7 +9,12 @@ class TaskProvider extends ChangeNotifier{
   List<Task> getTask(String categoryId) => _taskPerCategory[categoryId] ?? [];
 
   // add task to category
-  void addTask(String categoryId, Task task){
+  void addTask(String categoryId, String taskName){ // DateTime date // TODO add dateTime
+    final taskId = DateTime.now().toIso8601String();
+    //final taskDate = date;
+
+    Task task = Task(id: taskId, taskName: taskName);
+
     _taskPerCategory.putIfAbsent(categoryId, () => []);
     _taskPerCategory[categoryId]!.add(task);
     notifyListeners();
