@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:to_do_app/screens/home_page.dart';
 import 'providers/category_provider.dart';
 import 'providers/task_provider.dart';
-import 'screens/home_page.dart';
 
 void main() {
   runApp(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/task_provider.dart';
-import '../widgets/task_title_w.dart';
 import 'package:to_do_app/models/task.dart';
 
 class TaskTitleW extends StatelessWidget{

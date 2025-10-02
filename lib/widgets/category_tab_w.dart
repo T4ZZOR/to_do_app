@@ -7,9 +7,28 @@ class CategoryTabW extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    // TODO add colors to Tabs
     return Tab(
-      icon: Icon(category.icon),
+      //icon: Icon(category.icon),
       text: category.name,
     );
   }
 }
+
+// @override
+//   Widget build(BuildContext context) {
+//     return Tab(
+//       child: Container(
+//         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+//         decoration: BoxDecoration(
+//           color: category.color, // kolor zakładki
+//           borderRadius: BorderRadius.circular(16), // zaokrąglone krawędzie
+//         ),
+//         child: Text(
+//           category.name,
+//           style: const TextStyle(color: Colors.white),
+//         ),
+//       ),
+//     );
+//   }
+// }
