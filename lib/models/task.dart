@@ -1,25 +1,38 @@
 class Task {
   final String id;
-  final String title;
+  final String taskName;
   bool isDone;
-  DateTime? dateTime;
+  String? date;
   final List<Task> subTask;
 
-  Task({
+  Task({ 
     required this.id, 
-    required this.title, 
+    required this.taskName, 
     this.isDone = false,
-    this.dateTime,
-    this.subTask = const [],
-    });
+    this.date, 
+    List<Task>? subTask
+  }) : subTask = subTask ?? [];
 
-    // check all sub task to: done
-    void toggleAllSubTasks(bool done){
+  // check / uncheck task
+  void toggleTask(){
+    isDone = !isDone;
+  }
+
+  // tobble all subtasks
+  void toggleAllSub(bool status){
+    if (status){
       for (var sub in subTask){
-        sub.isDone = done;
+        sub.isDone = true;
       }
     }
+    else {
+      for (var sub in subTask){
+        sub.isDone = !sub.isDone;
+      }
+    }
+  }
 
-    // check all sub task 
-    bool get areAllSubTaskDone => subTask.isNotEmpty && subTask.every((sub) => sub.isDone);
+  // check all subtasks
+  bool get areAllSubtaskIsDone => subTask.isEmpty && subTask.every((sub) => sub.isDone == true);
+
 }
