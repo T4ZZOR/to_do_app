@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/providers/task_provider.dart';
+
+import '../providers/category_provider.dart';
 
 class AddTaskW extends StatefulWidget{
   final String categoryId;
@@ -16,7 +16,6 @@ class _AddTaskWState extends State<AddTaskW>{
   final TextEditingController _controller = TextEditingController();
   bool _isAdding = false;
 
-  
   void _addTask(){
     final text = _controller.text.trim();
     if (text.isNotEmpty){
@@ -27,8 +26,6 @@ class _AddTaskWState extends State<AddTaskW>{
         _controller.clear();
       });
     }
-    
-    
   }
 
   @override
@@ -39,6 +36,8 @@ class _AddTaskWState extends State<AddTaskW>{
 
   @override
   Widget build(BuildContext context){
+    final category = context.watch<CategoryProvider>().categories.firstWhere((cat) => cat.id == widget.categoryId);
+    
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       transitionBuilder: (child, animation){
@@ -47,7 +46,7 @@ class _AddTaskWState extends State<AddTaskW>{
       child: _isAdding ? 
       Padding(
         key: const ValueKey("input"),
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 32.0, top: 8.0, right: 16.0, bottom: 0.0),
         child: Row(
           children: [
             Expanded(
@@ -74,16 +73,18 @@ class _AddTaskWState extends State<AddTaskW>{
           ],
         ),
       )
-
-      : IconButton(
-        icon: Icon(Icons.add_circle, size: 40, color: Colors.amber),
-        onPressed: (){
-          setState(() {
-            _isAdding = true;
-          });
-        }, 
+      : 
+      Align(
+        alignment: Alignment.center,
+        child: IconButton(
+          icon: Icon(Icons.add_circle, size: 40, color: category.color),
+          onPressed: (){
+            setState(() {
+              _isAdding = true;
+            });
+          }, 
+        )
       )
     );
   }
-  
 }
