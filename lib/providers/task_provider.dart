@@ -32,15 +32,27 @@ class TaskProvider extends ChangeNotifier{
   }
 
   // add subTask to existing parentTask
-  void addSubTask(String categoryId, String parentTaskId, Task subTask){
+  void addSubTask(String categoryId, String parentTaskId, String subTaskName){
     final Task? parentTask = _taskPerCategory[categoryId]
       ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
 
+      final taskId = DateTime.now().toIso8601String();
+      Task subTask = Task(id: taskId, taskName: subTaskName);
       if (parentTask != null){
         parentTask.subTask.add(subTask);
         notifyListeners();
       }
   }
+
+  // void addSubTask(String categoryId, String parentTaskId, Task subTask){
+  //   final Task? parentTask = _taskPerCategory[categoryId]
+  //     ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
+
+  //     if (parentTask != null){
+  //       parentTask.subTask.add(subTask);
+  //       notifyListeners();
+  //     }
+  // }
   
   // remove subTask
   void removeSubTask(String categoryId, String parentTaskId, Task subTask){
