@@ -19,25 +19,19 @@ class TaskTitleWAnimated extends StatefulWidget {
 }
 
 class _TaskTitleWState extends State<TaskTitleWAnimated> {
-    // Stan rozszerzenia subtasków
     bool _isExpanded = false;
-    // Stan widoczności pola tekstowego dla nowego subtaska
     bool _isAddingSubTask = false;
-    // Kontroler pola tekstowego
     final TextEditingController _subTaskController = TextEditingController();
 
-    // Stałe do obliczania wysokości subtasków (przybliżone wartości dla ListTile)
     static const double _subTaskHeight = 48.0; 
     static const double _addSubTaskHeight = 48.0; 
     
     @override
     void initState() {
         super.initState();
-        // Zapewnienie, że jest rozwinięte, jeśli task ma już subtaski
         _isExpanded = widget.task.subTask.isNotEmpty;
     }
 
-    // Korekta stanu: synchronizuje _isExpanded z danymi zewnętrznymi (np. Providerem)
     @override
     void didUpdateWidget(covariant TaskTitleWAnimated oldWidget) {
         super.didUpdateWidget(oldWidget);
@@ -76,19 +70,14 @@ class _TaskTitleWState extends State<TaskTitleWAnimated> {
         });
     }
 
-    // Funkcja dodająca subtask
     void _addSubTask() {
         final subTaskName = _subTaskController.text.trim();
         if (subTaskName.isNotEmpty) {
-            context.read<TaskProvider>().addSubTask(
-                widget.categoryId,
-                widget.task.id,
-                subTaskName,
-            );
+            context.read<TaskProvider>().addSubTask(widget.categoryId, widget.task.id, subTaskName);
             _subTaskController.clear();
             setState(() {
                 _isAddingSubTask = false;
-                _isExpanded = true; // Zawsze rozwiń po dodaniu
+                _isExpanded = true;
             });
         }
     }
@@ -114,17 +103,14 @@ class _TaskTitleWState extends State<TaskTitleWAnimated> {
 
     @override
     Widget build(BuildContext context) {
-        // Obliczanie wysokości kontenera na podstawie stanu rozszerzenia
-        final double containerHeight = _calculateHeight();
-
         return Column(
             children: [
-                // GESTURE DETECTOR dla przełączania rozszerzenia
+                // Gestue detector to toggle on/off expand
                 GestureDetector(
                     onTap: _toggleExpansion,
                     child: ListTile(
                         minVerticalPadding: 0,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                         leading: Checkbox(
                             value: widget.task.isDone, onChanged: (_){
                                 context.read<TaskProvider>().toggleTaskCheck(widget.categoryId, widget.task.id);
@@ -136,37 +122,54 @@ class _TaskTitleWState extends State<TaskTitleWAnimated> {
                                 decoration: widget.task.isDone ? TextDecoration.lineThrough : null,
                             ),
                         ),
-                        // Ukryto ikonę rozwijania - zostawiono tylko przycisk usuwania
-                        trailing: IconButton(
-                            icon: const Icon(Icons.close),
-                            color: const Color.fromARGB(255, 126, 126, 126),
-                            onPressed: () {
-                                context.read<TaskProvider>().removeTask(widget.categoryId, widget.task.id);
-                            }
-                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: widget.task.subTask.isNotEmpty
+                                ? Text("${widget.task.subTask.where((s) => s.isDone).length}/${widget.task.subTask.length}")
+                                : SizedBox.shrink()                  
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              color: const Color.fromARGB(255, 126, 126, 126),
+                              onPressed: () {
+                                  context.read<TaskProvider>().removeTask(widget.categoryId, widget.task.id);
+                              }
+                           ),
+                          ],
+                        )
+                        // IconButton(
+                        //     icon: const Icon(Icons.close),
+                        //     color: const Color.fromARGB(255, 126, 126, 126),
+                        //     onPressed: () {
+                        //         context.read<TaskProvider>().removeTask(widget.categoryId, widget.task.id);
+                        //     }
+                        // ),
                     ),
                 ),
                 
-                // ANIMOWANY KONTENER DLA EFEKTU ROZWIJANIA Z BOUNCE
+                // animated container to add tasks
                 AnimatedContainer(
-                    duration: const Duration(milliseconds: 1000),
-                    curve: Curves.elasticOut, // Krzywa 'bounce'
-                    height: containerHeight,
-                    width: double.infinity, // Rozciągnij na całą szerokość
-                    child: SingleChildScrollView( // Użyj SingleChildScrollView, aby zapobiec przepełnieniu
-                        physics: const NeverScrollableScrollPhysics(), // Wyłącz przewijanie wewnątrz, ponieważ to jest kontrolowane przez animację
+                    duration: _isExpanded ? const Duration(milliseconds: 1000) : const Duration(milliseconds: 500) ,
+                    curve: _isExpanded ? Curves.elasticOut : Curves.easeInOut, 
+                    height: _calculateHeight().clamp(0.0, 1000.0),
+                    width: double.infinity,
+                    transform: Matrix4.translationValues(0, _isExpanded? 0 : 5, 0), 
+                    child: SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
                         child: Padding(
                             padding: const EdgeInsets.only(left: 20.0, top: 0, right: 0, bottom: 0),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                    // Lista istniejących subtasków
                                     ...widget.task.subTask.map((sub) {
                                         return ListTile(
                                             key: ValueKey(sub.id), // Dodajemy unikalny klucz dla lepszej wydajności listy
                                             minVerticalPadding: 0,
-                                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                                            dense: true, // Zmniejsza wysokość, aby lepiej pasowała do _subTaskHeight = 48
+                                            contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                                            dense: true,
                                             leading: Checkbox(
                                                 value: sub.isDone, 
                                                 onChanged: (_){
@@ -187,9 +190,9 @@ class _TaskTitleWState extends State<TaskTitleWAnimated> {
                                                 }
                                             ),
                                         );
-                                    }).toList(),
+                                    }),
 
-                                    // Sekcja do dodawania nowego subtaska
+                                    // adding new task
                                     Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                         child: SizedBox(
@@ -204,7 +207,7 @@ class _TaskTitleWState extends State<TaskTitleWAnimated> {
                                                                     controller: _subTaskController,
                                                                     autofocus: true,
                                                                     decoration: const InputDecoration(
-                                                                        hintText: "Nazwa Subtaska",
+                                                                        hintText: "Sub task name",
                                                                         border: InputBorder.none,
                                                                         isDense: true,
                                                                         contentPadding: EdgeInsets.symmetric(vertical: 8),
@@ -213,11 +216,11 @@ class _TaskTitleWState extends State<TaskTitleWAnimated> {
                                                                 ),
                                                             ),
                                                             IconButton(
-                                                                icon: const Icon(Icons.check, color: Colors.green),
+                                                                icon: const Icon(Icons.check, color: Colors.white),
                                                                 onPressed: _addSubTask,
                                                             ),
                                                             IconButton(
-                                                                icon: const Icon(Icons.cancel, color: Colors.grey),
+                                                                icon: const Icon(Icons.cancel, color: Colors.red),
                                                                 onPressed: () {
                                                                     setState(() {
                                                                         _isAddingSubTask = false;
@@ -229,7 +232,7 @@ class _TaskTitleWState extends State<TaskTitleWAnimated> {
                                                     )
                                                     : TextButton.icon(
                                                         icon: const Icon(Icons.add, size: 20),
-                                                        label: const Text("Dodaj Subtask"),
+                                                        label: const Text("add subtask"),
                                                         onPressed: () {
                                                             setState(() {
                                                                 _isAddingSubTask = true;
