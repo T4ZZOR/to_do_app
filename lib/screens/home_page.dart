@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           title: const Text("My Tasks"),
           bottom: TabBar(
             isScrollable: true,
-            indicatorColor: Colors.amber,//categories[categoryId].color,
+            indicatorColor: Colors.amber, //categories[categoryId].color,
             indicatorWeight: 4,
             labelColor: Colors.amber,
             onTap: (index) {

@@ -9,7 +9,12 @@ class TaskProvider extends ChangeNotifier{
   List<Task> getTask(String categoryId) => _taskPerCategory[categoryId] ?? [];
 
   // add task to category
-  void addTask(String categoryId, Task task){
+  void addTask(String categoryId, String taskName){ // DateTime date // TODO add dateTime
+    final taskId = DateTime.now().toIso8601String();
+    //final taskDate = date;
+
+    Task task = Task(id: taskId, taskName: taskName);
+
     _taskPerCategory.putIfAbsent(categoryId, () => []);
     _taskPerCategory[categoryId]!.add(task);
     notifyListeners();
@@ -27,10 +32,12 @@ class TaskProvider extends ChangeNotifier{
   }
 
   // add subTask to existing parentTask
-  void addSubTask(String categoryId, String parentTaskId, Task subTask){
+  void addSubTask(String categoryId, String parentTaskId, String subTaskName){
     final Task? parentTask = _taskPerCategory[categoryId]
       ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
 
+      final taskId = DateTime.now().toIso8601String();
+      Task subTask = Task(id: taskId, taskName: subTaskName);
       if (parentTask != null){
         parentTask.subTask.add(subTask);
         notifyListeners();
@@ -47,7 +54,7 @@ class TaskProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
-  // FIXME when sub task is on, toggle isDone and !isDone on main parentTask cause revert the subtasks
+
   // toggle task 
   void toggleTaskCheck(String categoryId, String taskId, {bool? done}){
     final task = _taskPerCategory[categoryId]
@@ -62,7 +69,7 @@ class TaskProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
-  // FIXME all subtask do not check main task
+
   // toggle subTask 
   void toggleSubTaskCheck(String categoryId, String parentTaskId, String subTaskId, {bool? done}){
     final Task? parentTask = _taskPerCategory[categoryId]
@@ -78,8 +85,15 @@ class TaskProvider extends ChangeNotifier{
         if (parentTask.areAllSubtaskIsDone){
           parentTask.isDone = true;
         }
+        else{
+          parentTask.isDone = false;
+        }
         notifyListeners();
       }  
     }
+  }
+
+  void setDate(String categoryId, String taskId){
+    
   }
 }

@@ -1,7 +1,5 @@
-import 'package:flutter/foundation.dart' hide Category;
 import '../models/category.dart';
 import '../data/dummy_data.dart';
-import '../providers/task_provider.dart';
 import 'package:flutter/material.dart';
 
 class CategoryProvider extends ChangeNotifier{
