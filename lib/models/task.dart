@@ -27,12 +27,12 @@ class Task {
     }
     else {
       for (var sub in subTask){
-        sub.isDone = !sub.isDone;
+        sub.isDone = false;
       }
     }
   }
 
   // check all subtasks
-  bool get areAllSubtaskIsDone => subTask.isEmpty && subTask.every((sub) => sub.isDone == true);
+  bool get areAllSubtaskIsDone => subTask.isNotEmpty && subTask.every((sub) => sub.isDone == true);
 
 }

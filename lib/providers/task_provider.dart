@@ -43,16 +43,6 @@ class TaskProvider extends ChangeNotifier{
         notifyListeners();
       }
   }
-
-  // void addSubTask(String categoryId, String parentTaskId, Task subTask){
-  //   final Task? parentTask = _taskPerCategory[categoryId]
-  //     ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
-
-  //     if (parentTask != null){
-  //       parentTask.subTask.add(subTask);
-  //       notifyListeners();
-  //     }
-  // }
   
   // remove subTask
   void removeSubTask(String categoryId, String parentTaskId, Task subTask){
@@ -64,7 +54,7 @@ class TaskProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
-  // FIXME when sub task is on, toggle isDone and !isDone on main parentTask cause revert the subtasks
+
   // toggle task 
   void toggleTaskCheck(String categoryId, String taskId, {bool? done}){
     final task = _taskPerCategory[categoryId]
@@ -79,7 +69,7 @@ class TaskProvider extends ChangeNotifier{
       notifyListeners();
     }
   }
-  // FIXME all subtask do not check main task
+
   // toggle subTask 
   void toggleSubTaskCheck(String categoryId, String parentTaskId, String subTaskId, {bool? done}){
     final Task? parentTask = _taskPerCategory[categoryId]
@@ -95,8 +85,15 @@ class TaskProvider extends ChangeNotifier{
         if (parentTask.areAllSubtaskIsDone){
           parentTask.isDone = true;
         }
+        else{
+          parentTask.isDone = false;
+        }
         notifyListeners();
       }  
     }
+  }
+
+  void setDate(String categoryId, String taskId){
+    
   }
 }

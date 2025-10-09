@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_app/providers/category_provider.dart';
 import 'package:to_do_app/widgets/add_task_w.dart';
-import 'package:to_do_app/widgets/task_w.dart';
 import '../providers/task_provider.dart';
 import '../widgets/task_title_w.dart';
 
@@ -22,8 +21,7 @@ class TaskListW extends StatelessWidget{
           return Card(
             color: category.color.withAlpha(150),
             child: ListTile(
-              //title: TaskTitleW(task: tasks[index], categoryId: categoryId)
-              title:  TaskTitleWAnimated(task: tasks[index], categoryId: categoryId)
+              title: TaskTitleW(task: tasks[index], categoryId: categoryId)
             ),
           );
         }
