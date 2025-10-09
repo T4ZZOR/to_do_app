@@ -1,37 +1,99 @@
-import 'package:flutter/material.dart';
-import 'package:to_do_app/models/task.dart';
+import 'package:flutter/foundation.dart';
+import '../models/task.dart';
+import '../data/dummy_data.dart';
 
-class TaskProvider with ChangeNotifier{
-  Map<String, List<Task>> _taskPerCategory = {};
+class TaskProvider extends ChangeNotifier{
+  //final Map<String, List<Task>> _taskPerCategory = {};
+  final Map<String, List<Task>> _taskPerCategory = dummyTasks;
 
-  // add task
-  void addTask(String category, Task task){
-    _taskPerCategory.putIfAbsent(category, () => []); // if task not exist, creates new category
-    _taskPerCategory[category]!.add(task); // put task into category
-    notifyListeners(); // send to frontend to update UI
+  List<Task> getTask(String categoryId) => _taskPerCategory[categoryId] ?? [];
+
+  // add task to category
+  void addTask(String categoryId, String taskName){ // DateTime date // TODO add dateTime
+    final taskId = DateTime.now().toIso8601String();
+    //final taskDate = date;
+
+    Task task = Task(id: taskId, taskName: taskName);
+
+    _taskPerCategory.putIfAbsent(categoryId, () => []);
+    _taskPerCategory[categoryId]!.add(task);
+    notifyListeners();
   }
 
-  // change task to "done"
-  void toggleTask(String category, String taskId, {bool? done}){
-    // find task from category
-    final task = _taskPerCategory[category]!.firstWhere((t) => t.id == taskId);
+  // remove task and all subtasks
+  void removeTask(String categoryId, String taskId){
+    _taskPerCategory[categoryId]?.removeWhere((task) => task.id == taskId);
+    notifyListeners();
+  }
+
+  void removeTaskFromCategory(String categoryId){
+    _taskPerCategory.remove(categoryId);
+    notifyListeners();
+  }
+
+  // add subTask to existing parentTask
+  void addSubTask(String categoryId, String parentTaskId, String subTaskName){
+    final Task? parentTask = _taskPerCategory[categoryId]
+      ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
+
+      final taskId = DateTime.now().toIso8601String();
+      Task subTask = Task(id: taskId, taskName: subTaskName);
+      if (parentTask != null){
+        parentTask.subTask.add(subTask);
+        notifyListeners();
+      }
+  }
+  
+  // remove subTask
+  void removeSubTask(String categoryId, String parentTaskId, Task subTask){
+    final Task? parentTask = _taskPerCategory[categoryId]
+      ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
+
+    if (parentTask != null){
+      parentTask.subTask.remove(subTask);
+      notifyListeners();
+    }
+  }
+
+  // toggle task 
+  void toggleTaskCheck(String categoryId, String taskId, {bool? done}){
+    final task = _taskPerCategory[categoryId]
+      ?.firstWhere((t) => t.id == taskId, orElse: () => Task(id: "", taskName: ""));
 
     if (task != null){
-      task.isDone = done ?? !task.isDone; // change state task as toggle true/false, null/false/true
+      task.isDone = done ?? !task.isDone;
 
-      // if task has subtasks. change all subtasks to "done"
       if (task.subTask.isNotEmpty){
-        task.toggleAllSubTasks(task.isDone);
+        task.toggleAllSub(task.isDone);
       }
       notifyListeners();
     }
   }
 
-  void toggleSubTask(String subCategory, String suTaskId, {bool? done}){
+  // toggle subTask 
+  void toggleSubTaskCheck(String categoryId, String parentTaskId, String subTaskId, {bool? done}){
+    final Task? parentTask = _taskPerCategory[categoryId]
+      ?.firstWhere((parentTask) => parentTask.id == parentTaskId, orElse: () => Task(id: "", taskName: ""));
 
+    if (parentTask != null){
+      final subTask = parentTask.subTask
+        .firstWhere((st) => st.id == subTaskId, orElse: () => Task(id: "", taskName: ""));
+
+      if (parentTask.subTask.isNotEmpty){
+        subTask.isDone = done ?? !subTask.isDone;
+
+        if (parentTask.areAllSubtaskIsDone){
+          parentTask.isDone = true;
+        }
+        else{
+          parentTask.isDone = false;
+        }
+        notifyListeners();
+      }  
+    }
   }
 
-  // void removeTask(String category, Task task){
-
-  // }
+  void setDate(String categoryId, String taskId){
+    
+  }
 }
